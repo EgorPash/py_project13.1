@@ -3,18 +3,25 @@ import json
 
 class Category:
     all_categories = 0
-    all_unique_goods = 0
 
     def __init__(self, name, description):
         self._name = name
         self._description = description
         self._products = []
-
         Category.all_categories += 1
+
+        @property
+        def all_unique_goods(self):
+            return sum(len(set([product.name for product in self._products])) for category in Category.all_categories)
 
     def add_product(self, product):
         self._products.append(product)
-        Category.all_unique_goods += 1
+
+    def __len__(self):
+        return sum(product.quantity for product in self._products)
+
+    def __str__(self):
+        return f'{self._name}, количество продуктов: {len(self)} шт.'
 
     @property
     def products(self):
@@ -34,6 +41,12 @@ class Product:
     @classmethod
     def create_product(cls, name, description, price, quantity):
         return cls(name, description, price, quantity)
+
+    def __str__(self):
+        return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
+
+    def __add__(self, other):
+        return self.price * self.quantity + other.price * other.quantity
 
     @property
     def price(self):

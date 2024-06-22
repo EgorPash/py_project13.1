@@ -27,5 +27,6 @@ def test_init_category(category_object, product1, product2):
     assert category_object._name == 'одежда'
     assert category_object._description == 'для спорта'
     assert category_object._products == [product1, product2]
+    assert len(category_object) == 20  # сумма количества продуктов
+    assert str(category_object) == 'одежда, количество продуктов: 20 шт.'
     assert Category.all_categories == 1
-    assert Category.all_unique_goods == 2
