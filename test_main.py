@@ -14,15 +14,18 @@ def product2():
 @pytest.fixture
 def category_object(product1, product2):
     """Тест получает на вход класс Category для удобства дальнейшей работы"""
-    return Category('одежда', 'для спорта', [product1, product2])
+    category = Category('одежда', 'для спорта')
+    category.add_product(product1)
+    category.add_product(product2)
+    return category
 
 def test_init_category(category_object, product1, product2):
     """
     Тест проверяет корректность инициализации объектов класса Category.
     Также тест считает количество продуктов и категорий.
     """
-    assert category_object.name == 'одежда'
-    assert category_object.description == 'для спорта'
-    assert category_object.products == [product1, product2]
-    assert category_object.all_categories == 1
-    assert category_object.all_unique_goods == 2
+    assert category_object._name == 'одежда'
+    assert category_object._description == 'для спорта'
+    assert category_object._products == [product1, product2]
+    assert Category.all_categories == 1
+    assert Category.all_unique_goods == 2
