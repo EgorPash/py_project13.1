@@ -1,0 +1,6 @@
+ Ignore PyCharm-specific files
+.idea/
+*.iml
+# Ignore generated files
+__pycache__/
+*.pyc
