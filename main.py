@@ -1,22 +1,34 @@
-class Product:
+from abc import ABC, abstractmethod
+
+class LogMixin:
+    """Миксин для вывода информации о создании объекта."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"{self.__class__.__name__}({', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())})")
+
+
+class Product(LogMixin, ABC):
+    """
+    Абстрактный класс "Продукт".
+    Определяет базовый функционал для всех продуктов.
+    """
+
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
         self._price = price
         self.quantity = quantity
 
+    @abstractmethod
+    def __str__(self):
+        """Возвращает строковое представление продукта."""
+        pass
+
     @classmethod
     def create_product(cls, name, description, price, quantity):
+        """Создает экземпляр продукта."""
         return cls(name, description, price, quantity)
-
-    def __str__(self):
-        return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
-
-    def __add__(self, other):
-        if type(self) == type(other):
-            return self.price * self.quantity + other.price * other.quantity
-        else:
-            raise TypeError("Невозможно сложить товары разных типов")
 
     @property
     def price(self):
@@ -29,8 +41,14 @@ class Product:
         else:
             self._price = new_price
 
+    def __add__(self, other):
+        if type(self) == type(other):
+            return self.price * self.quantity + other.price * other.quantity
+        else:
+            raise TypeError("Невозможно сложить товары разных типов")
 
-class Smartphone(Product):
+
+class Smartphone(Product, LogMixin):
     def __init__(self, name, description, price, quantity, performance, model, memory, color):
         super().__init__(name, description, price, quantity)
         self.performance = performance
@@ -38,15 +56,22 @@ class Smartphone(Product):
         self.memory = memory
         self.color = color
 
-class Grass(Product):
+    def __str__(self):
+        return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
+
+
+class Grass(Product, LogMixin):
     def __init__(self, name, description, price, quantity, country, growth_period, color):
         super().__init__(name, description, price, quantity)
         self.country = country
         self.growth_period = growth_period
         self.color = color
 
+    def __str__(self):
+        return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
 
-class Category:
+
+class Category(LogMixin):
     all_categories = 0
 
     def __init__(self, name, description):

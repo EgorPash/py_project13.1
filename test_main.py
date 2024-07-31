@@ -1,15 +1,14 @@
 import pytest
 from main import Category
-from main import Product
-
+from main import Smartphone
 
 @pytest.fixture
 def product1():
-    return Product('топ', 'для занятия спортом', 599, 10)
+    return Smartphone('топ', 'для занятия спортом', 599, 10, 'хороший', 'S-100', '128GB', 'черный')
 
 @pytest.fixture
 def product2():
-    return Product('топ2', 'для занятия спортом2', 599, 10)
+    return Smartphone('топ2', 'для занятия спортом2', 599, 10, 'отличный', 'S-200', '256GB', 'белый')
 
 @pytest.fixture
 def category_object(product1, product2):
