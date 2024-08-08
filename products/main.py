@@ -1,18 +1,19 @@
 from abc import ABC, abstractmethod
 
 class LogMixin:
+    """Миксин для вывода информации о создании объекта."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._log_creation()
-
-    def _log_creation(self):
         print(f"{self.__class__.__name__}({', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())})")
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({', '.join(f'{k}={v!r}' for k, v in self.__dict__.items())})"
 
 
 class Product(LogMixin, ABC):
+    """
+    Абстрактный класс "Продукт".
+    Определяет базовый функционал для всех продуктов.
+    """
+
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
@@ -21,10 +22,12 @@ class Product(LogMixin, ABC):
 
     @abstractmethod
     def __str__(self):
+        """Возвращает строковое представление продукта."""
         pass
 
     @classmethod
     def create_product(cls, name, description, price, quantity):
+        """Создает экземпляр продукта."""
         return cls(name, description, price, quantity)
 
     @property
@@ -45,7 +48,7 @@ class Product(LogMixin, ABC):
             raise TypeError("Невозможно сложить товары разных типов")
 
 
-class SmartPhone(Product, LogMixin):
+class Smartphone(Product, LogMixin):
     def __init__(self, name, description, price, quantity, performance, model, memory, color):
         super().__init__(name, description, price, quantity)
         self.performance = performance
@@ -82,6 +85,8 @@ class Category(LogMixin):
         return sum(len(set([product.name for product in self._products])) for category in Category.all_categories)
 
     def add_product(self, product):
+        if product.quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен.")
         if isinstance(product, Product) or issubclass(type(product), Product):
             self._products.append(product)
         else:
@@ -99,5 +104,13 @@ class Category(LogMixin):
         for product in self._products:
             product_list += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
         return product_list
+
+    def average_price(self):
+        try:
+            total_price = sum(product.price * product.quantity for product in self._products)
+            total_quantity = sum(product.quantity for product in self._products)
+            return total_price / total_quantity
+        except ZeroDivisionError:
+            return 0
 
 
